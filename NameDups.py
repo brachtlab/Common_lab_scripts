@@ -4,7 +4,7 @@ import sys
 from sys import argv
 dupsHandle=open("dups.bed",'r')
 genomeHandle=open('mephisto_alpha.fasta','r')
-outHandle=open('mephisto_alpha_labeled.fasta','w')
+outHandle=open('mephisto_alpha_rename.fasta','w')
 correlationsHandle=open('primary_contigs_correlation_with_original_names.txt','w')
 dupsDict={}
 matchingDict={}
@@ -14,7 +14,7 @@ x=0
 for line in dupsHandle:
 	dup=line.split()[0]
 	type=line.split()[3]
-	if type=='HAPLOTIG':
+	if type=='HAPLOTIG' or type=='OVLP':
 		matching=line.split()[4]
 		x+=1
 		dupsDict[dup]=matching
@@ -43,8 +43,8 @@ for seq_record in SeqIO.parse(genomeHandle,'fasta'):
 	elif primaryDict.has_key(id):
 		updatedName=primaryDict[id]
 		if updatedName=='TEMPORARY':
-                	updatedName='Contig%s'%j
-                        primaryDict[id]=updatedName
+			updatedName='Contig%s'%j
+			primaryDict[id]=updatedName
 		outHandle.write('>%s\n%s\n'%(updatedName,seq_record.seq))
 	else:
 		if junkDict.has_key(id):
